@@ -1,0 +1,19 @@
+{
+	"name": "Concert-PWA",
+	"short_name": "Concert",
+	"description": "Projet de TP pour le cours de PWA",
+	"lang": "fr-FR",
+	"theme_color": "#00cb4c",
+	"background_color": "#17486f",
+	"display": "standalone",
+	"orientation": "portrait",
+	"scope": "/",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "public/music.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}
