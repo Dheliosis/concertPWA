@@ -97,7 +97,7 @@ export default {
 	},
 
 	async created() {
-		fe() {
+		console.log(navigator.onLine);
 		const citiesResponse = await getGraphql(`
 			{
 				Ville {
@@ -148,11 +148,23 @@ export default {
 		this.selectConcert = this.concerts[randomInt]
 
 		this.forceUpdate()
+		this.worker()
 	},
 
 	methods: {
 		forceUpdate() {
 			this.componentKey++
+		},
+
+		worker() {
+			navigator.serviceWorker
+				.register('worker.js')
+				.then(registration => {
+					console.log('Service Worker enregistré avec succès :', registration);
+				})
+				.catch(error => {
+					console.error('Erreur lors de l\'enregistrement du Service Worker : ', error);
+				});
 		},
 
 		createVisitor() {
@@ -184,6 +196,15 @@ export default {
 						}
 					}
 				`
+
+			if (navigator.onLine) {
+				return getGraphql(query)
+			}
+
+			localStorage.setItem('query', query)
+
+		},
+
 		async camera() {
 			this.stream = await navigator.mediaDevices.getUserMedia({
 				video: true
