@@ -52,11 +52,17 @@
 			<video autoplay :srcObject="stream"></video>
 			<canvas></canvas>
 			<img :src="photo" />
+			<button @click="getLocalisation">Get localisation</button>
+			<div id="map"></div>
 		</div>
 	</div>
 </template>
 <script>
 import getGraphql from '../utils/graphql.js'
+import L from "leaflet";
+import 'leaflet/dist/leaflet.css';
+L.Icon.Default.imagePath = './public/'
+
 export default {
 	setup() {
 		return {
@@ -84,6 +90,7 @@ export default {
 			stream: {},
 			imageCapture: {},
 			photo: "",
+			coords: {}
 		}
 	},
 
@@ -206,4 +213,23 @@ export default {
 			this.user.image64 = b64
 
 		},
+		async getLocalisation() {
+			navigator.geolocation.getCurrentPosition((e) => {
+				console.log(e.coords);
+				this.coords = e.coords
+
+				const map = L.map('map').setView([this.coords.latitude, this.coords.longitude], 13);
+
+				L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+				const userMarker = L.marker([this.coords.latitude, this.coords.longitude]).addTo(map).bindPopup('Vous êtes ici').openPopup();
+			})
+
+			console.log(this.coords);
+		}
+
+	},
+
+
+}
 </script>
