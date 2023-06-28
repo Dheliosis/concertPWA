@@ -49,6 +49,8 @@
 
 			<button @click="camera">show camera</button>
 			<button @click="takePhoto">take a picture</button>
+			<button @click="askNotif">notif</button>
+
 			<video autoplay :srcObject="stream"></video>
 			<canvas></canvas>
 			<img :src="photo" />
@@ -213,6 +215,13 @@ export default {
 			this.user.image64 = b64
 
 		},
+
+		async askNotif() {
+			let promise = await Notification.requestPermission();
+
+			new Notification('This is a notification')
+		},
+
 		async getLocalisation() {
 			navigator.geolocation.getCurrentPosition((e) => {
 				console.log(e.coords);
@@ -233,3 +242,9 @@ export default {
 
 }
 </script>
+
+<style>
+#map {
+	height: 180px;
+}
+</style>
