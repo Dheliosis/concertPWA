@@ -1,5 +1,5 @@
-export default function graphql(query) {
-	fetch("http://152.228.217.28:5000/api/graphql/v1", {
+export default function getGraphql(query) {
+	return fetch("http://152.228.217.28:5000/api/graphql/v1", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -8,6 +8,8 @@ export default function graphql(query) {
 		body: JSON.stringify({ query }),
 	})
 		.then(r => r.json())
-		.then(data => console.log("data returned:", data))
+		.then(data => {
+			return data
+		})
 }
 
