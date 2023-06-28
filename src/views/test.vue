@@ -46,6 +46,12 @@
 
 				<input type="submit" value="Go" />
 			</form>
+
+			<button @click="camera">show camera</button>
+			<button @click="takePhoto">take a picture</button>
+			<video autoplay :srcObject="stream"></video>
+			<canvas></canvas>
+			<img :src="photo" />
 		</div>
 	</div>
 </template>
@@ -72,8 +78,12 @@ export default {
 				adress: "",
 				cityId: 0,
 				idParrain: 0,
+				image64: ""
 			},
 			componentKey: 0,
+			stream: {},
+			imageCapture: {},
+			photo: "",
 		}
 	},
 
@@ -150,6 +160,7 @@ export default {
 								idVille: ${this.user.cityId}, 
 								adresse: "${this.user.adress}",
 								idParrain: ${this.user.idParrain},
+								photo: "${this.user.image64}"
 							}
 						)
 						{
@@ -164,6 +175,35 @@ export default {
 						}
 					}
 				`
-			return getGraphql(query)
-}
+		async camera() {
+			this.stream = await navigator.mediaDevices.getUserMedia({
+				video: true
+			})
+
+			this.imageCapture = new ImageCapture(this.stream.getVideoTracks()[0])
+		},
+
+		blobToBase64(blob) {
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onloadend = () => {
+					const base64String = reader.result;
+					resolve(base64String);
+				};
+				reader.onerror = reject;
+				reader.readAsDataURL(blob);
+			});
+		},
+
+		async takePhoto() {
+			const blob = await this.imageCapture.takePhoto().then((blob) => {
+				return blob
+			})
+
+			this.photo = URL.createObjectURL(blob)
+
+			const b64 = await this.blobToBase64(blob)
+			this.user.image64 = b64
+
+		},
 </script>
